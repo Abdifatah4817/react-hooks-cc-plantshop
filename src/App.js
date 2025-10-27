@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Header from "./components/Header";
 import PlantList from "./components/PlantList";
 import NewPlantForm from "./components/NewPlantForm";
 import Search from "./components/Search";
@@ -10,23 +11,19 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:6001/plants")
       .then((r) => r.json())
-      .then((data) => setPlants(data));
+      .then(setPlants);
   }, []);
 
-  function handleAddPlant(newPlant) {
-    setPlants((prev) => [...prev, newPlant]);
-  }
-
-  const displayedPlants = plants.filter((plant) =>
+  const filteredPlants = plants.filter((plant) =>
     plant.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="app">
-      <h1>Plant Shop</h1>
-      <NewPlantForm onAddPlant={handleAddPlant} />
+      <Header />
+      <NewPlantForm onAddPlant={(plant) => setPlants([...plants, plant])} />
       <Search searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-      <PlantList plants={displayedPlants} />
+      <PlantList plants={filteredPlants} />
     </div>
   );
 }
